@@ -1,8 +1,8 @@
-// Variables
+
 $primary-color: #4CAF50;
 $secondary-color: #3e8e41;
 
-// Mixins
+
 @mixin box-shadow($shadow) {
   -webkit-box-shadow: $shadow;
   -moz-box-shadow: $shadow;
@@ -11,7 +11,6 @@ $secondary-color: #3e8e41;
   
 }
 
-// Base styles
 body {
   font-family: Arial, sans-serif;
   background-color: #f2f2f2;
