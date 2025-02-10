@@ -1,38 +1,35 @@
-const MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-    TerserPlugin = require("terser-webpack-plugin"),
-    path = require("path"),
-    common = require("./webpack.common.js");
-    const { merge } = require("webpack-merge"),
-    CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
-module.exports = merge(common, {
-    mode: "production",
-    devtool: "hidden-source-map",
+module.exports = {
+    entry: './src/client/index.js',
+    output: {
+        path: path.resolve(__dirname, 'dist'), 
+        filename: 'bundle.js',
+        libraryTarget: 'var',
+        library: 'Client'
+    },
+    mode: 'production',
     module: {
         rules: [
             {
-                test: /\.s[ac]ss$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
+                test: /\.js$/, 
+                exclude: /node_modules/,
+                loader: "babel-loader"
             },
+            {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader']
+            }
         ]
     },
-    output: {
-        filename: 'bundle.[contenthash].js',
-        path: path.resolve(__dirname, 'dist'),
-        libraryTarget: 'var',
-        library: 'Client',
-        clean: true,
-    },
-    optimization: {
-        minimize: true,
-        minimizer: [
-            new CssMinimizerPlugin(),
-            new TerserPlugin()
-        ],
-    },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: 'style.[contenthash].css'
-        })
+        new HtmlWebPackPlugin({
+            template: "./src/client/views/index.html",
+            filename: './index.html'
+        }),
+        new WorkboxPlugin.GenerateSW()
     ]
-})
+};

@@ -1,91 +1,42 @@
-import axios from "axios";
+async function handleSubmit(that) {
+    let projectData = {};
 
-//calling the isValidUrl function to use after sumission
-const { isValidUrl } = require("./checkURL");
+    /* Validate user form input */
+    let userData = {
+        to: that.to.value,
+        from: that.from.value,
+        startDate: that.depart.value,
+        endDate: that.return.value
+    };
+    await Client.validateInput(userData);
+    /* Get countdown to trip and total duration of trip, add to projectData object */
+    projectData = Client.handleDates(userData.startDate, userData.endDate);
 
-const input = document.getElementById("URI");
+    /* Get data from Geonames */
+    const coordinates = await Client.getData('/getLocation', { location: userData.to})
 
-//handle input change
-document.addEventListener('DOMContentLoaded', function () {
-    input.addEventListener("change", (e)=>{
-        e.preventDefault()
-        hide_error()
-        show_results(false)
-    })
-}
-)
-
-
-// handle the submit
-async function handleSubmit(e) {
-    e.preventDefault();
-
-    const form = document.querySelector("form");
-
-    if (!isValidUrl(input.value)) {
-        show_error();
-        document.getElementById("error").innerHTML = "Please, Enter a valid URL";
-        input.value = "";
-        return;
+    /* Get weatherdata for destination */
+    const weather = await Client.getData('/getWeather', { lat: coordinates.lat, long: coordinates.long });
+    
+    /* If trip is within 16 days, get forecast, otherwise get current weather */
+    let forecastDay = 0;
+    if(projectData.isSoon) {
+        forecastDay = projectData.countdown;
     }
-    loading(true);
-    const { data } = await axios.post(
-        'http://localhost:8000/',
-        form,
-        {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-    );
-    display_results(data);
-}
-
-//showing the data on the ui
-const display_results = data => {
-
-    loading(false)
-    if (data.msg) {
-        show_error()
-        show_results(false)
-        document.getElementById("error").innerHTML = `${data.msg}`;
-
-        return;
+    const weatherData = {
+        city: weather.city_name,
+        high_temp: weather.data[forecastDay].high_temp,
+        low_temp: weather.data[forecastDay].low_temp,
+        forecast: weather.data[forecastDay].weather.description
     }
-    hide_error()
-    show_results(true)
 
-    document.getElementById("agreement").innerHTML = `Agreement: ${data.sample.agreement}`;
-    document.getElementById("subjectivity").innerHTML = `Subjectivity: ${data.sample.subjectivity}`;
-    document.getElementById("confidence").innerHTML = `Confidence: ${data.sample.confidence}`;
-    document.getElementById("irony").innerHTML = `Irony: ${data.sample.irony}`;
-    document.getElementById("score_tag").innerHTML = `Score Tag: ${data.sample.score_tag}`;
+    /* Get image from Pixabay */
+    const image = await Client.getData('/getPhoto', { city: userData.to });
+    projectData.image_url = image.hits[0].largeImageURL;
+
+    /* add weatherData to the projectData object and update UI */
+    Object.assign(projectData, weatherData);
+    Client.updateUI(projectData);    
 }
 
-
-const loading = (bool) => {
-    const loader = document.getElementById('loader');
-    if (bool) {
-        loader.style.display = 'block';
-        return;
-    }
-    loader.style.display = 'none';
-}
-
-const show_results = (bool) => {
-    if (bool) {
-        document.querySelectorAll("ul li").forEach(element => {
-            element.style.display = "block"
-        })
-        return;
-    }
-    document.querySelectorAll("ul li").forEach(element => {
-        element.style.display = "none"
-    })
-   
-}
-
-const show_error = () => document.getElementById("error").style.display = "block";
-const hide_error = () => document.getElementById("error").style.display = "none";
-
-export { handleSubmit }
+export { handleSubmit };

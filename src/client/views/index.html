@@ -1,33 +1,42 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
+    <title>Travel App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Evaluate a News Article with Natural Language Processing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <form id="myForm" method="post" onsubmit="return Client.handleSubmit(event)">
-            <label for="URI">Enter an Article URL:</label>
-            <input type="text" id="URI" name="URI" />
-            <button type="submit" value="Analyze">Analyze</button>
-        </form>
+<div id = "app">
+    <div id="header">
+        <h1>Travel Planner ✈️</h1>
     </div>
-    <div id="error" style="display: none;"></div>
-    <div id="results">
-        <h2>Results:</h2>
-        <div id="loader" style="display: none;"></div>
-          <ul id="resultsList">
-            <li id="agreement"></li>
-            <li id="subjectivity"></li>
-            <li id="confidence"></li>
-            <li id="irony"></li>
-            <li id="score_tag"></li>
-        </ul>
+    <div id="main">
+        <div id="box">
+            <form action="javascript:;" onsubmit="Client.handleSubmit(this)" class="form" id="travel-form">
+                <div class="form__left">
+                    <label for="to">To</label>
+                    <input type="text" name="to" id="to" placeholder="City">
+                    <label for="from">From</label>
+                    <input type="text" name="from" id="from" placeholder="City">
+                </div>
+                <div class="form__right">
+                    <label for="start-date">Departure</label>
+                    <input type="date" name="depart" id="depart">
+                    <label for="end-date">Return</label>
+                    <input type="date" name="return" id="return">
+                    <input type="submit" value="Submit" class="form__button">
+                </div>
+            </form>
+        </div>
     </div>
     <footer>
-        <p>@ copyright Baraa Jabareen</p>
+        Made by Baraa Jabareen for Udacity
     </footer>
+</div>
+<script>
+
+</script>
+
 </body>
 </html>

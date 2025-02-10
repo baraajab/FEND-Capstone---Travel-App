@@ -1,30 +1,58 @@
-const common = require("./webpack.common.js"),
-    { merge } = require("webpack-merge"),
-    CssMinimizerPlugin = require("css-minimizer-webpack-plugin"),
-    path = require("path");
-
-module.exports = merge(common, {
-    mode: "development",
-    devtool: "source-map",
-    module: {
-        rules: [
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+module.exports = {
+    entry: './src/client/index.js',
+    output: {
+        path: path.resolve(__dirname, 'dist'), 
+        filename: 'bundle.js',
+        libraryTarget: 'var',
+        library: 'Client'
+    },
+    mode: 'development',
+    devtool: 'source-map',
+    devServer: {
+        host: 'localhost',
+        port: 8000,
+        proxy: [
             {
-                test: /\.s[ac]ss$/i,
-                use: ["style-loader", "css-loader", "sass-loader"]
+                context: ['/api'], // The context array can be used to match multiple routes
+                target: 'http://localhost:8082', // API server address
+                secure: false, // If you're using HTTPS
+                changeOrigin: true
             }
         ]
     },
-    output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        libraryTarget: 'var',
-        library: 'Client',
-        clean: true,
+    
+    module: {
+        rules: [
+            {
+                test: /\.js$/, 
+                exclude: /node_modules/,
+                loader: "babel-loader"
+            },
+            {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader']
+            },
+            { 
+                test: /\.(png|svg|jpg|gif)$/,
+                use: ['file-loader']
+            }
+        ]
     },
-    optimization: {
-        minimizer: [
-            new CssMinimizerPlugin(),
-        ],
-        minimize: true,
-    },
-})
+    plugins: [
+        new HtmlWebPackPlugin({
+            template: "./src/client/views/index.html",
+            filename: './index.html'
+        }),
+        new CleanWebpackPlugin({
+            dry: true,
+            verbose: true,
+            cleanStaleWebpackAssets: true,
+            protectWebpackAssets: false
+        }),
+
+    ]
+};
