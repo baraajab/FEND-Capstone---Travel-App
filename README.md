@@ -1,16 +1,11 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=700px src="./ProjPic.png.png" alt="Project logo"></a>
+ <img width=700px src="./looking.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">test-webpack</h3>
 
 <div align="center">
-
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/menoo20/Travel-app-planner.svg)](https://github.com/menoo20/Travel-app-planner/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/menoo20/Travel-app-planner.svg)](https://github.com/menoo20/Travel-app-planner/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
 
@@ -90,6 +85,6 @@ npm run build to get the live version of a new build after you have installed th
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@menoo20](https://github.com/menoo20) - Idea & Initial work
+- [@baraajab](https://github.com/baraajab) 
 
 
