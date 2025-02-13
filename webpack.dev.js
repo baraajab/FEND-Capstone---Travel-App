@@ -2,7 +2,7 @@ const common = require("./webpack.common.js"),
     { merge } = require("webpack-merge"),
     CssMinimizerPlugin = require("css-minimizer-webpack-plugin"),
     path = require("path");
-
+    const { GenerateSW } = require("workbox-webpack-plugin");
 module.exports = merge(common, {
     mode: "development",
     devtool: "source-map",
@@ -29,4 +29,11 @@ module.exports = merge(common, {
         ],
         minimize: true,
     },
+    plugins: [
+        new GenerateSW({
+            clientsClaim: true,
+            skipWaiting: true,
+            sourcemap: false,
+          }),
+      ],
 })
